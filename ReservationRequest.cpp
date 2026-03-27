@@ -1,17 +1,18 @@
 #include <iostream>
+using namespace std;
 
 class ReservationRequest {
 
 private:
-    std::string course_name;
-    std::string weekday;
+    string course_name;
+    string weekday;
     int start_hour;
     int end_hour;
     int student_count;
 
 public:
 
-    ReservationRequest(std::string course_name, std::string weekday, int start_hour, int end_hour, int student_count){
+    ReservationRequest(string course_name, string weekday, int start_hour, int end_hour, int student_count){
         this->course_name = course_name;
         this->weekday = weekday;
         this->start_hour = start_hour;
@@ -21,9 +22,23 @@ public:
     
     ~ReservationRequest();
 
-    int getStartHour();
-    int getEndHour();
-    std::string getCourseName();
-    std::string getWeekday();
-    int getStudentCount();
+    int getStartHour() {
+        return this->start_hour;
+    }
+
+    int getEndHour(){
+        return this->end_hour;
+    }
+
+    string getCourseName(){
+        return this->course_name;
+    }
+
+    string getWeekday(){
+        return this->weekday;
+    }
+
+    int getStudentCount(){
+        return this->student_count;
+    }
 };

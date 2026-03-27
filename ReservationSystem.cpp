@@ -1,6 +1,27 @@
 #include <iostream>
 #include "ReservationRequest.hpp"
+#include "ReservationSystem.hpp"
 using namespace std;
+
+class Reserve
+{
+    string week_day;
+    string course;
+    int begin;
+    int end;
+
+public:
+    Reserve(string week_day, string course, int begin, int end)
+    {
+        this->week_day = week_day;
+        this->course = course;
+        this->begin = begin;
+        this->end = end;
+
+    }
+
+    //~Reserve();
+};
 
 class Room
 {
@@ -8,8 +29,13 @@ class Room
     int days;
     int schedule;
     int **mat;
+    Reserve reserves[70];
 
 public:
+    int getCapacity() {
+        return this->capacity;
+    }
+
     int getDays()
     {
         return this->days;
@@ -42,13 +68,20 @@ public:
         }
     }
 
-    bool reserve(string day_week, int begin, int end)
-    {
-        int day;
+    bool verify_capacity(int capacity){
+        if(this->capacity < capacity){
+            cout << "Room not big enough!" << endl;
+            return false;
+        }  else {
+            return true;
+        }
+    }
 
+    bool verify_availability(string day_week, int begin, int end) {
+        int day;
         if (day_week == "segunda")
         {
-            day == 0;
+            day = 0;
         }
         else if (day_week == "terca")
         {
@@ -80,8 +113,43 @@ public:
             {
                 cout << "Room not available for this time" << endl;
                 return false;
-            }
+            } 
+        } return true;
+    }
+
+    bool reserve(string day_week, int begin, int end, int capacity)
+    {
+    if(verify_availability(day_week, begin,end) && verify_capacity(capacity)){
+        int day;
+
+        if (day_week == "segunda")
+        {
+            day = 0;
         }
+        else if (day_week == "terca")
+        {
+            day = 1;
+        }
+        else if (day_week == "quarta")
+        {
+            day = 2;
+        }
+        else if (day_week == "quinta")
+        {
+            day = 3;
+        }
+        else if (day_week == "sexta")
+        {
+            day = 4;
+        }
+        else
+        {
+            cout << "Informe um dia válido " << endl;
+        }
+
+        int *schedule_day = mat[day];
+        begin = begin - 7;
+        end = end - 7;
 
         for (int i = begin; i < end; i++)
         {
@@ -89,47 +157,48 @@ public:
         }
         cout << "Room reserved for " << day_week << " from " << begin + 7 << " to " << end + 7 << endl;
 
-        return true;
-    }
-};
-
-class Reserve
-{
-    string week_day;
-    string course;
-    int begin;
-    int end;
-
-public:
-    Reserve(int week_day, int course)
-    {
-        this->week_day = week_day;
-        this->course = course;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    //~Reserve();
+
 };
+
+
 
 class ReservationSystem
 {
 
 private:
     int room_count;
-    int *room_capacities;
+    Room* rooms;
 
     // Estruturas internas escolhidas pelos alunos
     // para armazenar e gerenciar as reservas, os horários, ...
 
 public:
-    ReservationSystem(int room_count, int *room_capacities)
+    ReservationSystem(int room_count, Room *rooms)
     {
         this->room_count = room_count;
-        this->room_capacities;
+        this->rooms = rooms;
     }
 
     ~ReservationSystem();
 
-    bool reserve(ReservationRequest request);
+    bool reserve(ReservationRequest request) {
+        for(int i = 0; i<room_count; i++){
+            if(rooms[i].reserve(request.getWeekday(), request.getStartHour(), request.getEndHour(), request.getStudentCount())){
+                return true;
+            } 
+        }  
+        return false;
+           
+        
+
+    }
+
     bool cancel(std::string course_name);
 
     void printSchedule();
@@ -140,18 +209,13 @@ public:
 
 int main()
 {
-    Room room(30);
+    Room room1(30);
+    Room room2(40);
+    Room room3(60);
+    Room room4(15);
+    Room rooms[4] = {room1, room2, room3, room4};
 
-    /*
-    for(int i = 0; i<res.getDays(); i++){
-        for(int j = 0; j<res.getSchedule(); j++){
-            cout<<res.getMat()[i][j];
-        }
-    }
-    */
+    ReservationSystem system(4, rooms);
 
-    room.reserve("segunda", 8, 10);
-    room.reserve("segunda", 10, 13);
-    room.reserve("terca", 7, 9);
-    room.reserve("segunda", 7, 9);
+
 }

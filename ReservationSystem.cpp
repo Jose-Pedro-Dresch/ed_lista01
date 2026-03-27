@@ -2,6 +2,8 @@
 #include "ReservationRequest.hpp"
 #include "ReservationSystem.hpp"
 using namespace std;
+using namespace requestsystem;
+
 
 class Reserve
 {
@@ -11,6 +13,7 @@ class Reserve
     int end;
 
 public:
+    Reserve() {}
     Reserve(string week_day, string course, int begin, int end)
     {
         this->week_day = week_day;
@@ -30,6 +33,7 @@ class Room
     int schedule;
     int **mat;
     Reserve reserves[70];
+    int reserve_count;
 
 public:
     int getCapacity() {
@@ -56,6 +60,7 @@ public:
         this->capacity = capacity;
         this->days = 5;
         this->schedule = 14;
+        this->reserve_count = 0;
 
         this->mat = new int *[days];
         for (int i = 0; i < days; i++)
@@ -78,7 +83,7 @@ public:
     }
 
     bool verify_availability(string day_week, int begin, int end) {
-        int day;
+        int day = -1;
         if (day_week == "segunda")
         {
             day = 0;
@@ -120,7 +125,7 @@ public:
     bool reserve(string day_week, int begin, int end, int capacity)
     {
     if(verify_availability(day_week, begin,end) && verify_capacity(capacity)){
-        int day;
+        int day = -1;
 
         if (day_week == "segunda")
         {
@@ -155,6 +160,12 @@ public:
         {
             schedule_day[i] = 1;
         }
+
+        if (reserve_count < 70) {
+            reserves[reserve_count] = Reserve(day_week, "curso", begin + 7, end + 7);
+            reserve_count++;
+        }
+
         cout << "Room reserved for " << day_week << " from " << begin + 7 << " to " << end + 7 << endl;
 
             return true;

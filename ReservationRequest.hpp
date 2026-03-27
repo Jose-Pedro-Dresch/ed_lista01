@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+namespace reservationrequest {
 // Classe que representa o pedido de reserva
 class ReservationRequest
 {
@@ -22,3 +23,4 @@ public:
     std::string getWeekday();
     int getStudentCount();
 };
+}

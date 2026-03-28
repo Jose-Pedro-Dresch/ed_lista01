@@ -1,44 +1,35 @@
 #include <iostream>
 using namespace std;
+#include "ReservationRequest.hpp"
 
-class ReservationRequest {
+ReservationRequest::ReservationRequest(string course_name, string weekday, int start_hour, int end_hour, int student_count){
+    this->course_name = course_name;
+    this->weekday = weekday;
+    this->start_hour = start_hour;
+    this->end_hour = end_hour;
+    this->student_count = student_count;
+}
 
-private:
-    string course_name;
-    string weekday;
-    int start_hour;
-    int end_hour;
-    int student_count;
-
-public:
-
-    ReservationRequest(string course_name, string weekday, int start_hour, int end_hour, int student_count){
-        this->course_name = course_name;
-        this->weekday = weekday;
-        this->start_hour = start_hour;
-        this->end_hour = end_hour;
-        this->student_count = student_count;
-    }
+ReservationRequest::~ReservationRequest(){
     
-    ~ReservationRequest();
+}
 
-    int getStartHour() {
-        return this->start_hour;
-    }
+int ReservationRequest::getStartHour() {
+    return this->start_hour;
+}
 
-    int getEndHour(){
-        return this->end_hour;
-    }
+int ReservationRequest::getEndHour(){
+    return this->end_hour;
+}
 
-    string getCourseName(){
-        return this->course_name;
-    }
+string ReservationRequest::getCourseName(){
+    return this->course_name;
+}
 
-    string getWeekday(){
-        return this->weekday;
-    }
+string ReservationRequest::getWeekday(){
+    return this->weekday;
+}
 
-    int getStudentCount(){
-        return this->student_count;
-    }
-};
+int ReservationRequest::getStudentCount(){
+    return this->student_count;
+}

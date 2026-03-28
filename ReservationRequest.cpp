@@ -2,6 +2,7 @@
 using namespace std;
 #include "ReservationRequest.hpp"
 
+// Construtor da ReservationRequest
 ReservationRequest::ReservationRequest(string course_name, string weekday, int start_hour, int end_hour, int student_count){
     this->course_name = course_name;
     this->weekday = weekday;
@@ -10,9 +11,12 @@ ReservationRequest::ReservationRequest(string course_name, string weekday, int s
     this->student_count = student_count;
 }
 
+// Destrutor da classe
 ReservationRequest::~ReservationRequest(){
     
 }
+
+// Getters
 
 int ReservationRequest::getStartHour() {
     return this->start_hour;

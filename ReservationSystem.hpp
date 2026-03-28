@@ -36,6 +36,7 @@ public:
      */
     void print();
 
+    // Getters
     std::string getCourse();
     std::string getDay();
     int getBegin();
@@ -97,6 +98,9 @@ public:
      */
     Reserve getReserveByIndex(int i);
 
+    /**
+     * Getter para o tamanho do array
+     */
     int getSize();
 };
 
@@ -114,6 +118,7 @@ class Room
     int room_number;
 
 public:
+    // Getters
     int getCapacity();
     int getDays();
     int getSchedule();

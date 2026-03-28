@@ -5,11 +5,6 @@ using namespace std;
 
 int main()
 {
-    // Exemplo de inicialização do sistema
-    
-    //int capacities[3] = {30, 50, 80};
-    //ReservationSystem system(3, capacities);
-
 
     int capacities[4] = {15, 40, 50, 15};
     ReservationSystem system(4, capacities);

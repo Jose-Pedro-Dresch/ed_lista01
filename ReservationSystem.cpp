@@ -4,9 +4,12 @@
 using namespace std;
 
 ///===============================================================================================================================
+///===============================================================================================================================
 //// RESERVE
 
 Reserve::Reserve()
+// Construtor sem parâmetros de Reserve 
+//usado para alocar espaços de memória para reservas no array dinâmico de reservas)
 {
     week_day = "";
     course = "";
@@ -15,6 +18,7 @@ Reserve::Reserve()
 }
 
 Reserve::Reserve(string week_day, string course, int begin, int end)
+// Construtor de reserve
 {
     this->week_day = week_day;
     this->course = course;
@@ -23,10 +27,12 @@ Reserve::Reserve(string week_day, string course, int begin, int end)
 }
 
 void Reserve::print()
-{
+
+{   // printa o horário e curso da reserva (ex: 9h~11h: Estrutura de Dados)
     cout << begin << "h~" << end << "h: " << course << endl;
 }
 
+// Getters
 string Reserve::getCourse() { return course; }
 string Reserve::getDay() { return week_day; }
 int Reserve::getBegin() { return begin; }
@@ -34,22 +40,26 @@ int Reserve::getEnd() { return end; }
 
 
 ///===============================================================================================================================
+///===============================================================================================================================
 //// ARRAY RESERVAS
 
 ReservesArray::ReservesArray()
-{ // Initialization
+// Construtor do array dinâmico de Reservas 
+{ 
         this->capacity = 10;
         this->size = 0;
         this->data = new Reserve[capacity];
 }
 
 ReservesArray::~ReservesArray()
+// Elimina a lista de reservas
 {
         delete[] this->data;
 }
 
 void ReservesArray::append(Reserve r)
 {
+    // Se já estourou a capacidade máxima de reservas cria uma nova lista com o dobro da capacidade;
     if (this->capacity == this->size)
     {
         resize(2 * this->capacity);
@@ -59,12 +69,16 @@ void ReservesArray::append(Reserve r)
 }
 
 void ReservesArray::resize(int new_capacity)
+// Redimensiona a lista de reservas para quando estourar a capacidade do array
 {
+    // Cria a nova lista com a nova capacidade
     Reserve *novo_dados = new Reserve[new_capacity];
     for (int i = 0; i < this->size; i++)
-    {
+    {   
+        // Associa os dados já existentes à nova lista
         novo_dados[i] = this->data[i];
     }
+    // Remove a lista antiga, pega a nova e seta a nova capacidade
     delete[] this->data;
     this->data = novo_dados;
     this->capacity = new_capacity;
@@ -72,6 +86,7 @@ void ReservesArray::resize(int new_capacity)
 
 int ReservesArray::get_day_index(string day_week)
 {
+    // Associa cada string de dia a um valor (para futura comparação de ordem)
     if (day_week == "segunda") return 0;
     if (day_week == "terca") return 1;
     if (day_week == "quarta") return 2;
@@ -80,24 +95,28 @@ int ReservesArray::get_day_index(string day_week)
     return -1;
 }
 
-// bubble sort
+// Bubble sort para ordenar as reservas
 void ReservesArray::sort_reserves(){
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size-i-1; j++) {
+
+            // Pega os valores numéricos associados a cada dia para fazer a comparação
             int day1 = get_day_index(data[j].getDay());
             int day2 = get_day_index(data[j+1].getDay());
 
             if (day1 > day2) {
-                // Troca os elementos
+                // Troca os elementos (ex: "segunda" < "terça" <=> (0<1))
                 Reserve temp = data[j];
                 data[j] = data[j+1];
                 data[j+1] = temp;
                 } else if (day1 == day2) {
-                if(data[j].getBegin() > data[j+1].getBegin()){
-                    Reserve temp = data[j];
-                    data[j] = data[j+1];
-                    data[j+1] = temp;
-                }
+                    // Se os dois adjascentes já estão no mesmo dia, 
+                    // ordenamos pelo horário de início
+                    if(data[j].getBegin() > data[j+1].getBegin()){
+                        Reserve temp = data[j];
+                        data[j] = data[j+1];
+                        data[j+1] = temp;
+                    }
                 }
         }
     }
@@ -133,6 +152,7 @@ return false;
 
 
 Reserve ReservesArray::getReserveByIndex(int i)
+// Retorna a reserva pelo índice dela na lista 
 {
     return data[i];
 }
@@ -144,41 +164,23 @@ int ReservesArray::getSize()
 
 
 ///===============================================================================================================================
+///===============================================================================================================================
 //// ROOM
 
-int Room::getCapacity()
-{
-    return this->capacity;
-}
-
-int Room::getDays()
-{
-    return this->days;
-}
-
-int Room::getSchedule()
-{
-    return this->schedule;
-}
-
-int** Room::getMat()
-{
-    return this->mat;
-}
-
-
-ReservesArray& Room::get_reservas()
-{
-    return reserves;
-}
-
-int Room::getRoomNumber() 
-{
-    return this->room_number;    
-}
+// Getters 
+int Room::getCapacity() { return this->capacity; }
+int Room::getDays() { return this->days; }
+int Room::getSchedule() { return this->schedule; }
+int** Room::getMat() { return this->mat; }
+ReservesArray& Room::get_reservas() { return reserves; }
+int Room::getRoomNumber() { return this->room_number; }
 
 
 Room::Room(int capacity, int room_number)
+// Construtor da Room, recebe capacity e room_number
+// days é 5 nesse projeto (segunda à sexta)
+// schedule é 14 nesse projeto - horários de 7h às 20h (consideramos o horário de início apenas)
+// Preenchemos a mat (matriz de horários) com 0
 {
     this->capacity = capacity;
     this->days = 5;
@@ -187,6 +189,9 @@ Room::Room(int capacity, int room_number)
     this->mat = new int *[days];
     for (int i = 0; i < days; i++)
     {
+        // 0 no índice mat[i][j] significa que o dia i e horário das j até ás j+1 está disponível (1 caso contrário)
+        // Exemplo: mat[2][4] significa que o horário das 11h (4+7) da quarta (dia 2) está reservado
+        // Lembrando que +7 ocorre porque a aula inicia às 7h
         this->mat[i] = new int[schedule]{0};
     }
     this->room_number = room_number;
@@ -196,12 +201,15 @@ Room::~Room()
 {
 for (int i = 0; i < days; i++)
 {
+    // Destruímos os dados de cada dia
     delete[] mat[i];
 }
+// Destruímos a matriz
 delete[] mat;
 }   
 
 int Room::get_day_index(string day_week)
+// Associa cada string de dia a um valor (correspondente na matriz de horários)
 {
     if (day_week == "segunda") return 0;
     if (day_week == "terca") return 1;
@@ -214,13 +222,15 @@ int Room::get_day_index(string day_week)
 
 bool Room::verify_reserve(string course, string day_week, int begin, int end, int student_count) 
 {
+    // Verifica se comporta a quantidade de alunos
     if (this->capacity < student_count)
     {
+        // Optou-se por deixar comentada essa linha para não poluir muito o terminal
         // cout << "Room " << this->getRoomNumber() << " not big enough!" << endl;
         return false;
     }
     else
-    {
+    {   //pegamos o índice correspondente à cada dia
         int day = get_day_index(day_week);
 
     if (day == -1)
@@ -229,62 +239,68 @@ bool Room::verify_reserve(string course, string day_week, int begin, int end, in
         return false;
     }
 
-    int *schedule_day = mat[day];
-    int begin_array = begin - 7;
-    int end_array = end - 7;
+    int *schedule_day = mat[day]; //Pegamos a grade d horários somente do dia em questão
+    int begin_array = begin - 7; // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
+    int end_array = end - 7; // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
 
     for (int i = begin_array; i < end_array; i++)
     {
+        // Se algum horário estiver reservada nesse horário não efetua-se a reserva
         if (schedule_day[i] == 1)
         {
+            // Optou-se por deixar comentada essa linha para não poluir muito o terminal
             // cout << "Room " << this->getRoomNumber() << " not available for this time" << endl;
             return false;
         }
     }
-    return true;
+    return true; // Se tiver capacidade e estiver disponível 
     }
 }
 
 bool Room::reserve(string course, string day_week, int begin, int end)
 {
+    // Pega o índice correspondente do dia
     int day = get_day_index(day_week);
-
     if (day == -1)
     {
         cout << "Informe um dia válido" << endl;
         return false;
     }
 
-    int *schedule_day = mat[day];
-    int begin_array = begin - 7;
-    int end_array = end - 7;
+    int *schedule_day = mat[day];  //Pegamos a grade d horários somente do dia em questão
+    int begin_array = begin - 7; // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
+    int end_array = end - 7; // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
 
     for (int i = begin_array; i < end_array; i++)
     {
+        // Marca os horários do intervalo como preenchidos
         schedule_day[i] = 1;
     }
 
+    // Cria um objeto de reserva e guarda no array de reservas
     Reserve r(day_week, course, begin, end);
     reserves.append(r);
-
-    cout << "Room " << this->getRoomNumber() << " reserved for " << course
-            << " on " << day_week
-            << " from " << begin
-            << " to " << end << endl << endl;
 
     return true;
 }
 
 void Room::print_reserves()
+// Uma sala printa os horários resevados de cada dia
 {
+    // Só printa se tiver alguma reserva marcada
     if(reserves.getSize() > 0){
         cout << "ROOM " << this->getRoomNumber() << ":" << endl << endl;
 
         string days[5] = {"segunda", "terca", "quarta", "quinta", "sexta"};
-        string days_uppercase[5] = {"SEGUNDA", "TERCA", "QUARTA", "QUARTA", "SEXTA"};
+        string days_uppercase[5] = {"SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA"};
+
+        // Ordena os horários por dia e hora de início da aula
         reserves.sort_reserves();
     
+        // For para cad dia da semana
         for(int i = 0; i < 5; i++) {
+            // Primeiro verifica se no dia em questão tem alguma aula marcada
+            // Se não tiver não printa nada sobre esse dia
             bool day_has_reserves = false;
             for (int j = 0; j < reserves.getSize(); j++)
             {
@@ -293,10 +309,13 @@ void Room::print_reserves()
                     break;
                 }
             }
+
+            // Se houver alguma reserva para o dia em questão, printa todas as reservas desse dia
             if (day_has_reserves == true) {
                 cout << "DIA: " << days_uppercase[i] << endl;
                 for(int j = 0; j < reserves.getSize(); j++) {
                     if(reserves.getReserveByIndex(j).getDay() == days[i]) {
+                        // Chama o print de cada reserva desse dia (que mostra horáios e nome da aula)
                         reserves.getReserveByIndex(j).print();
                     }
                     
@@ -304,7 +323,8 @@ void Room::print_reserves()
                 cout << endl;
             }
         }
-    }
+    cout << endl;
+    } 
 }
 
 bool Room::remove_reserve(string course_name)
@@ -334,52 +354,67 @@ return false;
 }
 
 ///===============================================================================================================================
+///===============================================================================================================================
 //// RESERVATION SYSTEM
 
 ReservationSystem::ReservationSystem(int room_count, int *room_capacities)
+// Construtor da ReservationSystem recebe número de salas e suas capacidades
 {
     this->room_count = room_count;
     this->room_capacities = room_capacities;
-    this->rooms = new Room*[room_count];
+    this->rooms = new Room*[room_count]; 
 
     for (int i = 0; i < room_count; i++)
     {
+        // Armazena uma lista de Rooms com as capacidades que forem passadas no construtor 
+        // Cria também cada sala com seu número (1, 2, 3, ...)
         this->rooms[i] = new Room(room_capacities[i], i+1);
     }
 }
 
 ReservationSystem::~ReservationSystem()
 {
+    // Remove o Room em cada índice da lista de Rooms
     for(int i = 0; i<room_count; i++) {
         delete this->rooms[i];
     }
 
+    // Remove a lista em si
     delete[] this->rooms;
 }
 
 bool ReservationSystem::reserve(ReservationRequest request)
 {   
+    // Percorre cada sala na lista de salas até encontrar uma que pode ser alocada (se houver)
     for(int i = 0; i<room_count; i++) {
-        cout << "Trying to allocate " << request.getCourseName()  <<" class in room " << rooms[i]->getRoomNumber() << endl;
+        cout << "Tentando alocar a aula de " << request.getCourseName()  <<" na sala " << rooms[i]->getRoomNumber() << endl;
         if(rooms[i]->verify_reserve(request.getCourseName(), request.getWeekday(), request.getStartHour(), request.getEndHour(), request.getStudentCount())) 
+        // Se pode a sala permite reserva, ela é efetivada:
         {
-            cout << "RESERVE FOR ROOM " << i+1 << " COMPLETED!!!" << endl;
+            cout << "Reserva da aula de "<< request.getCourseName() << " ("
+            << request.getWeekday() << " - " << request.getStartHour() << "h~" <<
+            request.getEndHour() << "h) "
+            "efetuada na sala " << rooms[i]->getRoomNumber() << "!!!" << endl << endl;
+
+            // Efetua a reserva
             rooms[i]->reserve(request.getCourseName(), request.getWeekday(), request.getStartHour(), request.getEndHour());
             
             return true;
         }
     }
-    cout << "Request for " << request.getCourseName() << " denied!" << endl << endl;
+    // Se nenhuma sala puder ser alocada, retorna false
+    cout << "Requisição para a aula de " << request.getCourseName() << " não pôde ser efetuada!!!" << endl << endl;
     return false;
 }
 
 bool ReservationSystem::cancel(std::string course_name)
 {
+
     for(int i = 0; i < room_count; i++)
     {
         if(rooms[i]->remove_reserve(course_name))
         {
-            cout << "Reserve for " << course_name << " canceled !"<< endl << endl;
+            cout << "Reserva para a aula de " << course_name << " cancelada!!!"<< endl << endl;
             return true;
         }
     }
@@ -388,10 +423,11 @@ bool ReservationSystem::cancel(std::string course_name)
 
 void ReservationSystem::printSchedule()
 {
-    cout << "PRINTING SCHEDULE: " << endl<< endl;
+
+    cout << "PRINTANDO HORÁRIOS DA SEMANA: " << endl<< endl;
     for (int i = 0; i < room_count; i++)
     {
+        // Chama o print da grade horária de cada sala (cada sala sabe se printar)
         rooms[i]->print_reserves();
-        cout << endl;
     }
 }

@@ -228,7 +228,7 @@ bool Room::verify_reserve(string course, string day_week, int begin, int end, in
     if (this->capacity < student_count)
     {
         // Optou-se por deixar comentada essa linha para não poluir muito o terminal
-        // cout << "Room " << this->getRoomNumber() << " not big enough!" << endl;
+        // cout << "Room " << this->getRoomNumber() << " não comporta essa quantidade de alunos!" << endl;
         return false;
     }
     else
@@ -241,7 +241,7 @@ bool Room::verify_reserve(string course, string day_week, int begin, int end, in
             return false;
         }
 
-        int *schedule_day = mat[day]; // Pegamos a grade d horários somente do dia em questão
+        int *schedule_day = mat[day]; // Pegamos a grade de horários somente do dia em questão
         int begin_array = begin - 7;  // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
         int end_array = end - 7;      // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
 
@@ -251,7 +251,7 @@ bool Room::verify_reserve(string course, string day_week, int begin, int end, in
             if (schedule_day[i] == 1)
             {
                 // Optou-se por deixar comentada essa linha para não poluir muito o terminal
-                // cout << "Room " << this->getRoomNumber() << " not available for this time" << endl;
+                // cout << "Room " << this->getRoomNumber() << " indisponível para esse horário" << endl;
                 return false;
             }
         }
@@ -269,7 +269,7 @@ bool Room::reserve(string course, string day_week, int begin, int end)
         return false;
     }
 
-    int *schedule_day = mat[day]; // Pegamos a grade d horários somente do dia em questão
+    int *schedule_day = mat[day]; // Pegamos a grade de horários somente do dia em questão
     int begin_array = begin - 7;  // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
     int end_array = end - 7;      // Diminuímos 7 porque a aula começa às 7h e o índice do array começa em 0
 
@@ -398,6 +398,14 @@ ReservationSystem::~ReservationSystem()
 
 bool ReservationSystem::reserve(ReservationRequest request)
 {
+     // Verificação de horários de início e fim de uma aula
+    if (request.getStartHour() < 7 || request.getEndHour() > 21 || request.getStartHour() >= request.getEndHour()) 
+    {
+        cout << "Horário inválido de solicitação para aula de "<< request.getCourseName() << " - o período de aulas é 7h~21h!!!" << endl << endl;
+        return false;
+    }
+
+
     // Percorre cada sala na lista de salas até encontrar uma que pode ser alocada (se houver)
     for (int i = 0; i < room_count; i++)
     {
@@ -432,7 +440,7 @@ bool ReservationSystem::cancel(std::string course_name)
         // Se encontrou, cancela
         if (rooms[i]->remove_reserve(course_name))
         {
-            cout << "Reserva para a aula de " << course_name << " cancelada!!!" << endl
+            cout << "Reserva para a aula de " << course_name << " cancelada na sala " << rooms[i]->getRoomNumber() << "!!!"<< endl
                  << endl;
             return true;
         }

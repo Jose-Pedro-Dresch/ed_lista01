@@ -9,7 +9,7 @@ O sistema recebe solicitações contendo disciplina, dia da semana, intervalo de
 
 As funcionalidades incluem:
 - Realizar reservas;
-- Cancelar reservas existentes;
+- Cancelar reservas existentes (Considera-se o nome da disciplina como identificador **ÚNICO** para realizar o cancelamento);
 - Exibir a grade de horários de todas as salas.
 
 A implementação segue as restrições do enunciado:

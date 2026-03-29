@@ -36,6 +36,7 @@
 *.exe
 *.out
 *.app
+reservation_system
 
 # debug information files
 *.dwo

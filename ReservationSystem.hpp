@@ -21,8 +21,8 @@ public:
      * Representa o construtor sem parâmetros de uma reserva (usado na hora de alocar memória no array dinâmico)
      */
 
-     /**
-     * Representa o destrutor de uma reserva 
+    /**
+     * Representa o destrutor de uma reserva
      */
     Reserve();
 
@@ -50,7 +50,7 @@ public:
  * Representa um array dinâmico que armazena reservas
  * Possui capacidade, tamanho e uma lista propriamente dita de reservas
  * Quando estoura o limite de capacidade, dobra-se a capacidade
- */ 
+ */
 class ReservesArray
 {
 protected:
@@ -85,13 +85,16 @@ public:
     int get_day_index(std::string day_week);
 
     /**
-     * Função que ordena o array de reservas por dia da semana e horários das aulas 
+     * Função que ordena o array de reservas por dia da semana e horários das aulas
      * Usa o algoritmo do Bubble sort
      */
     void sort_reserves();
-    
+
+    /**
+     * Função que recebe um índice e remove o elemento correspondente
+     * Ela já realiza a realocação à esquerda dos elementos à direita do elemento removido
+     */
     void remove_at(int index);
-    bool remove_by_course(std::string course_name);
 
     /**
      * Função para acessar a reserva no índice i do array
@@ -103,7 +106,6 @@ public:
      */
     int getSize();
 };
-
 
 ///===============================================================================================================================
 //// ROOM
@@ -123,7 +125,7 @@ public:
     int getDays();
     int getSchedule();
     int **getMat();
-    ReservesArray& get_reservas();
+    ReservesArray &get_reservas();
     int getRoomNumber();
 
     /**
@@ -137,7 +139,7 @@ public:
     /**
      * Representa o destrutor de uma sala
      */
-    ~Room(); 
+    ~Room();
 
     /**
      * Função que associa a cada dia da semana um valor para acessa-lo na matriz de horários mat
@@ -165,30 +167,31 @@ public:
      */
     void print_reserves();
 
+    /**
+     * Recebe o nome da disciplina e, caso ela exista nas reservas dessa sala, remove-a do array de reservas
+     */
     bool remove_reserve(std::string course_name);
-
 };
 
 ///===============================================================================================================================
 //// RESERVATION SYSTEM
-
-
 
 /**
  * Representa o sistema de reserva
  * Ele recebe a quantidade de salas e suas capaciades,
  * armazena os objetos de sala em uma lista (ponteiros para esses objetos),
  * recebe uma requisição de reserva e percorre cada uma de suas salas até encontrar (ou não)
- * alguma que permita a alocação. 
+ * alguma que permita a alocação.
  * Também pode cancelar uma reserva para uma determinada disciplina
  * e exibir todas as reservas de todas as salas na semana
  */
-class ReservationSystem {
+class ReservationSystem
+{
 
 private:
     int room_count;
-    int* room_capacities;
-    Room** rooms;
+    int *room_capacities;
+    Room **rooms;
 
 public:
     /**
@@ -196,7 +199,7 @@ public:
      * Recebe a quantidade de salas e suas capacidades,
      * cria e armazena os objetos de salas correspondentes
      */
-    ReservationSystem(int room_count, int* room_capacities);
+    ReservationSystem(int room_count, int *room_capacities);
 
     /**
      * Representa o destrutor de um sistema de reserva
@@ -204,12 +207,15 @@ public:
     ~ReservationSystem();
 
     /**
-     * Função que recebe uma requisição de reserva e percorre cada uma de suas salas, 
+     * Função que recebe uma requisição de reserva e percorre cada uma de suas salas,
      * efetuando (se possível) a reserva na primeira disponível
      * Retorna true se possível e false caso contrário
      */
     bool reserve(ReservationRequest request);
 
+    /**
+     * Recebe o nome de uma disciplina e percorre a lista de reservas de cada sala para cancelar a reserva correspondente
+     */
     bool cancel(std::string course_name);
 
     /**

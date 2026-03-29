@@ -1,4 +1,7 @@
-# Room Reservation System - Data Structure - List 01 
+# Sistema de Reserva de Sala - Estrutura de Dados - Lista 01
+Autores:
+- José Pedro Dresch
+- Phelipe Gabriel Lima da Silva
 
 ## Descrição do Projeto
 Este projeto implementa um sistema de reservas de salas de aula para os cinco dias úteis da semana, das 7h às 21h (14 horários de ínicio possíveis para uma reserva).  
